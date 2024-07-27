@@ -72,9 +72,17 @@ if student_name_search:
 else:
     st.write("Enter the student's name to search for their T-BOX log.")
 
-# Section to display student data
+# Display student data with NFC card ID 0
 st.header("Student Data")
 st.dataframe(student_data)
+
+# Check for any NFC card ID that is 0
+students_with_zero_id = student_data[student_data['nfc_card_id'] == 0]
+if not students_with_zero_id.empty:
+    st.write("Students with NFC Card ID 0:")
+    st.dataframe(students_with_zero_id)
+else:
+    st.write("No students with NFC Card ID 0 found.")
 
 # Endpoint for receiving data from ESP32
 query_params = st.experimental_get_query_params()
