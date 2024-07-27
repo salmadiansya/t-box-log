@@ -9,7 +9,7 @@ LOG_DATA_FILE = 'dataset/log.csv'
 # Load student data with caching
 @st.cache_data
 def load_student_data():
-    return pd.read_csv(DATASET_FILE)
+    return pd.read_csv(DATASET_FILE, dtype={'nfc_card_id': str})
 
 # Load log data with error handling
 def load_log_data(log_data_file):
@@ -75,14 +75,6 @@ else:
 # Display student data with NFC card ID 0
 st.header("Student Data")
 st.dataframe(student_data)
-
-# Check for any NFC card ID that is 0
-students_with_zero_id = student_data[student_data['nfc_card_id'] == 0]
-if not students_with_zero_id.empty:
-    st.write("Students with NFC Card ID 0:")
-    st.dataframe(students_with_zero_id)
-else:
-    st.write("No students with NFC Card ID 0 found.")
 
 # Endpoint for receiving data from ESP32
 query_params = st.experimental_get_query_params()
