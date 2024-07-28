@@ -72,7 +72,7 @@ if student_name_search:
 else:
     st.write("Enter the student's name to search for their T-BOX log.")
 
-# Display student data with NFC card ID 0
+# Display student data
 st.header("Student Data")
 st.dataframe(student_data)
 
