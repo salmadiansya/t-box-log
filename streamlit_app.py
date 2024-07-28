@@ -77,7 +77,7 @@ st.header("Student Data")
 st.dataframe(student_data)
 
 # Endpoint for receiving data from ESP32
-query_params = st.query_params()
+query_params = st.experimental_get_query_params()
 if 'nfc_card_id' in query_params:
     nfc_card_id = query_params['nfc_card_id'][0]
     log_entry = add_log_entry(nfc_card_id)
