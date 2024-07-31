@@ -38,6 +38,16 @@ def save_log_data(log_data):
     except Exception as e:
         st.error(f"Error saving log data: {e}")
 
+# Define function to download log data as CSV
+def download_log_data(log_data):
+    csv = log_data.to_csv(index=False)
+    st.download_button(
+        label="Download Log Data as CSV",
+        data=csv,
+        file_name='log_data.csv',
+        mime='text/csv'
+    )
+
 # Load data
 student_data = load_student_data()
 log_data = load_log_data(LOG_DATA_FILE)
@@ -47,9 +57,20 @@ st.title("MAN10 JAKARTA T-BOX LOG")
 
 # Section to display log data
 st.header("Log Notification")
-if st.button("Refresh"):
-    log_data = load_log_data(LOG_DATA_FILE)
-st.dataframe(log_data)
+
+# Date selection for filtering logs
+st.sidebar.header("Filter by Date")
+start_date = st.sidebar.date_input("Start Date", value=datetime.now().date())
+end_date = st.sidebar.date_input("End Date", value=datetime.now().date())
+
+# Filter log data based on selected date range
+if not log_data.empty:
+    log_data['timestamp'] = pd.to_datetime(log_data['timestamp'])
+    filtered_log_data = log_data[(log_data['timestamp'].dt.date >= start_date) & (log_data['timestamp'].dt.date <= end_date)]
+else:
+    filtered_log_data = pd.DataFrame(columns=['timestamp', 'student_name', 'student_class', 'nfc_card_id'])
+
+st.dataframe(filtered_log_data)
 
 # Section to simulate NFC card reading
 st.header("Add Log Entry")
@@ -67,7 +88,7 @@ if st.button("Add Log Entry"):
 st.header("Search by Student Name")
 student_name_search = st.text_input("Enter Student Name to Search")
 if student_name_search:
-    filtered_log_data = log_data[log_data['student_name'].str.contains(student_name_search, case=False, na=False)]
+    filtered_log_data = filtered_log_data[filtered_log_data['student_name'].str.contains(student_name_search, case=False, na=False)]
     st.dataframe(filtered_log_data)
 else:
     st.write("Enter the student's name to search for their T-BOX log.")
@@ -90,3 +111,6 @@ if 'nfc_card_id' in query_params:
 
 # Save the current log data on application exit
 save_log_data(log_data)
+
+# Add download button for log data
+download_log_data(filtered_log_data)
