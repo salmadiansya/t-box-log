@@ -57,19 +57,20 @@ st.title("MAN10 JAKARTA T-BOX LOG")
 
 # Section to display log data
 st.header("Log Notification")
+st.write("Use the filter below to view logs for a specific day.")
+download_log_data(log_data)
 
-# Date selection for filtering logs
-st.sidebar.header("Filter by Date")
-start_date = st.sidebar.date_input("Start Date", value=datetime.now().date())
-end_date = st.sidebar.date_input("End Date", value=datetime.now().date())
+# Date picker for filtering logs by day
+selected_date = st.date_input("Select Date", datetime.now())
 
-# Filter log data based on selected date range
+# Filter log data by selected date
 if not log_data.empty:
     log_data['timestamp'] = pd.to_datetime(log_data['timestamp'])
-    filtered_log_data = log_data[(log_data['timestamp'].dt.date >= start_date) & (log_data['timestamp'].dt.date <= end_date)]
+    filtered_log_data = log_data[log_data['timestamp'].dt.date == selected_date]
 else:
     filtered_log_data = pd.DataFrame(columns=['timestamp', 'student_name', 'student_class', 'nfc_card_id'])
 
+# Display filtered log data
 st.dataframe(filtered_log_data)
 
 # Section to simulate NFC card reading
@@ -88,12 +89,12 @@ if st.button("Add Log Entry"):
 st.header("Search by Student Name")
 student_name_search = st.text_input("Enter Student Name to Search")
 if student_name_search:
-    filtered_log_data = filtered_log_data[filtered_log_data['student_name'].str.contains(student_name_search, case=False, na=False)]
-    st.dataframe(filtered_log_data)
+    filtered_log_data_by_name = filtered_log_data[filtered_log_data['student_name'].str.contains(student_name_search, case=False, na=False)]
+    st.dataframe(filtered_log_data_by_name)
 else:
     st.write("Enter the student's name to search for their T-BOX log.")
 
-# Display student data
+# Display student data with NFC card ID 0
 st.header("Student Data")
 st.dataframe(student_data)
 
@@ -111,6 +112,3 @@ if 'nfc_card_id' in query_params:
 
 # Save the current log data on application exit
 save_log_data(log_data)
-
-# Add download button for log data
-download_log_data(filtered_log_data)
