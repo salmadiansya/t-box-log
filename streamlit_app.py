@@ -57,7 +57,6 @@ st.title("MAN10 JAKARTA T-BOX LOG")
 
 # Section to display log data
 st.header("Log Notification")
-st.write("Use the filter below to view logs for a specific day.")
 download_log_data(log_data)
 
 # Date picker for filtering logs by day
