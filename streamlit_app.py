@@ -68,6 +68,13 @@ if not log_data.empty:
 else:
     filtered_log_data = pd.DataFrame(columns=['timestamp', 'student_name', 'student_class', 'nfc_card_id'])
 
+# Filter log data by class
+if not student_data.empty:
+    classes = student_data['student_class'].unique()
+    selected_class = st.selectbox("Select Class", ["All Classes"] + list(classes))
+    if selected_class != "All Classes":
+        filtered_log_data = filtered_log_data[filtered_log_data['student_class'] == selected_class]
+
 # Display filtered log data
 st.dataframe(filtered_log_data)
 
